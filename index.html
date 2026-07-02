@@ -242,54 +242,6 @@
             }
         }
 
-        /* Calibration Mode Styles */
-        .calibration-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #333;
-            color: white;
-            padding: 15px;
-            z-index: 2000;
-            max-height: 200px;
-            overflow-y: auto;
-            border-top: 3px solid #667eea;
-        }
-
-        .calibration-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
-
-        .zone-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            font-size: 0.85rem;
-        }
-
-        .zone-control {
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 5px;
-        }
-
-        .zone-control label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .zone-control input {
-            width: 100%;
-            padding: 4px;
-            margin-bottom: 3px;
-            border-radius: 3px;
-            border: 1px solid #667eea;
-        }
-
         .zone-label-overlay {
             position: absolute;
             background: rgba(255, 0, 0, 0.7);
@@ -298,43 +250,11 @@
             font-size: 0.8rem;
             width: 100%;
             height: 100%;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
             pointer-events: none;
-        }
-
-        .calibration-info {
-            background: rgba(102, 126, 234, 0.2);
-            border-left: 3px solid #667eea;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 3px;
-            font-size: 0.85rem;
-        }
-
-        .calibration-button {
-            background: #4ade80;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-
-        .calibration-button:hover {
-            background: #22c55e;
-        }
-
-        .calibration-button.danger {
-            background: #ef4444;
-        }
-
-        .calibration-button.danger:hover {
-            background: #dc2626;
         }
 
         /* Responsive Design */
@@ -413,7 +333,6 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
-            <button id="toggle-calibration" class="calibration-button" type="button" style="margin-top: 12px;">Edit bubble positions</button>
         </div>
 
         <!-- Comic Section -->
@@ -440,19 +359,6 @@
         <p>You've completed the story! Well done arranging the narrative of our healthcare journey.</p>
     </div>
 
-    <!-- Calibration Panel -->
-    <div class="calibration-panel" id="calibration-panel" style="display: none;">
-        <div class="calibration-info">
-            📍 <strong>Calibration Mode:</strong> Adjust the zones to match your speech bubbles. Update values below, then refresh to see changes.
-        </div>
-        <div class="calibration-title">Zone Positions (Top %, Left %, Width %, Height %)</div>
-        <div class="zone-controls" id="zone-controls"></div>
-        <div style="margin-top: 10px;">
-            <button class="calibration-button" onclick="copyZoneConfig()">📋 Copy Config</button>
-            <button class="calibration-button danger" onclick="closeCalibration()">Close Calibration</button>
-        </div>
-    </div>
-
     <script>
         // ============= CONFIGURATION =============
         // Edit these positions to match your comic image's bubble locations
@@ -470,10 +376,6 @@
             { id: 'zone-9', top: 93, left: 24, width: 21, height: 0.5, correctCard: 9 },
             { id: 'zone-10', top: 73, left: 67, width: 30, height: 7, correctCard: 10 }
         ];
-
-        // Calibration mode - set to true to show zones on page load
-        const CALIBRATION_MODE = false;
-        let calibrationEnabled = CALIBRATION_MODE;
 
         const NARRATION_CARDS = [
             "BEFORE WE WORE OUR WHITE UNIFORMS, WE CAME FROM COMPLETELY DIFFERENT PATHS",
@@ -499,7 +401,6 @@
             createDropZones();
             createNarrationCards();
             setupDragAndDrop();
-            addCalibrationToggle();
         }
 
         function createDropZones() {
@@ -515,88 +416,11 @@
                 dropZoneEl.style.width = zone.width + '%';
                 dropZoneEl.style.height = zone.height + '%';
                 
-                const label = document.createElement('div');
-                label.className = 'zone-label-overlay';
-                label.textContent = index + 1;
-                label.style.display = calibrationEnabled ? 'flex' : 'none';
-                dropZoneEl.appendChild(label);
-                
                 comicContainer.appendChild(dropZoneEl);
             });
-
-            // Setup calibration mode if enabled
-            if (calibrationEnabled) {
-                setupCalibrationMode();
-            }
         }
 
-        function setupCalibrationMode() {
-            const panel = document.getElementById('calibration-panel');
-            const controls = document.getElementById('zone-controls');
-            panel.style.display = 'block';
-            
-            DROP_ZONES.forEach((zone, index) => {
-                const control = document.createElement('div');
-                control.className = 'zone-control';
-                control.innerHTML = `
-                    <label>Bubble ${index + 1}</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                        <input type="number" id="zone-${index}-top" value="${zone.top}" placeholder="Top %" step="1">
-                        <input type="number" id="zone-${index}-left" value="${zone.left}" placeholder="Left %" step="1">
-                        <input type="number" id="zone-${index}-width" value="${zone.width}" placeholder="Width %" step="1">
-                        <input type="number" id="zone-${index}-height" value="${zone.height}" placeholder="Height %" step="1">
-                    </div>
-                    <button class="calibration-button" style="width: 100%; margin-top: 5px; padding: 6px;" onclick="updateZone(${index})">Update</button>
-                `;
-                controls.appendChild(control);
-            });
-        }
 
-        function updateZone(index) {
-            const top = parseFloat(document.getElementById(`zone-${index}-top`).value) || DROP_ZONES[index].top;
-            const left = parseFloat(document.getElementById(`zone-${index}-left`).value) || DROP_ZONES[index].left;
-            const width = parseFloat(document.getElementById(`zone-${index}-width`).value) || DROP_ZONES[index].width;
-            const height = parseFloat(document.getElementById(`zone-${index}-height`).value) || DROP_ZONES[index].height;
-            
-            DROP_ZONES[index].top = top;
-            DROP_ZONES[index].left = left;
-            DROP_ZONES[index].width = width;
-            DROP_ZONES[index].height = height;
-            
-            const zone = document.getElementById(DROP_ZONES[index].id);
-            zone.style.top = top + '%';
-            zone.style.left = left + '%';
-            zone.style.width = width + '%';
-            zone.style.height = height + '%';
-        }
-
-        function copyZoneConfig() {
-            const config = 'const DROP_ZONES = ' + JSON.stringify(DROP_ZONES, null, 4) + ';';
-            navigator.clipboard.writeText(config);
-            alert('Configuration copied to clipboard! Paste it into the HTML file.');
-        }
-
-        function closeCalibration() {
-            document.getElementById('calibration-panel').style.display = 'none';
-            calibrationEnabled = false;
-            renderDropZones();
-        }
-
-        function addCalibrationToggle() {
-            const button = document.getElementById('toggle-calibration');
-            button.addEventListener('click', () => {
-                calibrationEnabled = true;
-                document.getElementById('calibration-panel').style.display = 'block';
-                renderDropZones();
-            });
-        }
-
-        function renderDropZones() {
-            const labels = document.querySelectorAll('.zone-label-overlay');
-            labels.forEach(label => label.style.display = calibrationEnabled ? 'flex' : 'none');
-            const panel = document.getElementById('calibration-panel');
-            panel.style.display = calibrationEnabled ? 'block' : 'none';
-        }
 
         function createNarrationCards() {
             const cardsContainer = document.getElementById('cards-container');
