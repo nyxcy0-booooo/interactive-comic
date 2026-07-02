@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Comic Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-counter {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4ade80;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .comic-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .comic-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .comic-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .drop-zone {
+            position: absolute;
+            border: 2px dashed rgba(100, 150, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(100, 150, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 60px;
+        }
+
+        .drop-zone:hover {
+            background: rgba(100, 150, 255, 0.15);
+            border-color: rgba(100, 150, 255, 0.6);
+        }
+
+        .drop-zone.filled {
+            border: 2px solid #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+            cursor: default;
+        }
+
+        .drop-zone.filled:hover {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: #4ade80;
+        }
+
+        .narration-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 0 0 calc(50% - 20px);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .narration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .narration-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .narration-card.placed {
+            opacity: 0.5;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card-inside-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            text-align: center;
+            line-height: 1.25;
+            width: 95%;
+            max-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        .cards-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cards-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .completion-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+        }
+
+        .completion-message h2 {
+            color: #4ade80;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .completion-message p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Calibration Mode Styles */
+        .calibration-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 15px;
+            z-index: 2000;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 3px solid #667eea;
+        }
+
+        .calibration-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .zone-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .zone-control {
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .zone-control label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .zone-control input {
+            width: 100%;
+            padding: 4px;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            border: 1px solid #667eea;
+        }
+
+        .zone-label-overlay {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .calibration-info {
+            background: rgba(102, 126, 234, 0.2);
+            border-left: 3px solid #667eea;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .calibration-button {
+            background: #4ade80;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .calibration-button:hover {
+            background: #22c55e;
+        }
+
+        .calibration-button.danger {
+            background: #ef4444;
+        }
+
+        .calibration-button.danger:hover {
+            background: #dc2626;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .narration-card {
+                flex: 0 0 calc(100% - 20px);
+                font-size: 0.9rem;
+            }
+
+            .drop-zone {
+                min-height: 50px;
+            }
+
+            .card-inside-zone {
+                font-size: 0.75rem;
+            }
+
+            .completion-message {
+                width: 90%;
+                padding: 30px;
+            }
+
+            .completion-message h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .comic-section {
+                padding: 10px;
+            }
+
+            .cards-section {
+                padding: 15px;
+            }
+
+            .narration-card {
+                flex: 0 0 calc(100% - 20px);
+                padding: 12px;
+                font-size: 0.85rem;
+                min-height: 70px;
+            }
+
+            .drop-zone {
+                min-height: 45px;
+            }
+
+            .completion-message {
+                padding: 25px;
+            }
+
+            .completion-message h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Our Journey as Healthcare Professionals</h1>
+        
+        <div class="progress-counter">
+            <div>Cards Placed: <span id="progress-count">0</span>/11</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <button id="toggle-calibration" class="calibration-button" type="button" style="margin-top: 12px;">Edit bubble positions</button>
+        </div>
+
+        <!-- Comic Section -->
+        <div class="comic-section">
+            <div class="comic-container" id="comic-container">
+                <img src="Before we wore our white uniforms, we came from completely different paths_20260702_232400_0000.png" 
+                     alt="Comic Background" class="comic-image" id="comic-image">
+                <!-- Drop zones will be dynamically created here -->
+            </div>
+        </div>
+
+        <!-- Cards Section -->
+        <div class="cards-section">
+            <h3>📝 Drag cards to place them in the speech bubbles</h3>
+            <div class="cards-container" id="cards-container">
+                <!-- Narration cards will be dynamically created here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Message -->
+    <div class="completion-message" id="completion-message">
+        <h2>🎉 Congratulations!</h2>
+        <p>You've completed the story! Well done arranging the narrative of our healthcare journey.</p>
+    </div>
+
+    <!-- Calibration Panel -->
+    <div class="calibration-panel" id="calibration-panel" style="display: none;">
+        <div class="calibration-info">
+            📍 <strong>Calibration Mode:</strong> Adjust the zones to match your speech bubbles. Update values below, then refresh to see changes.
+        </div>
+        <div class="calibration-title">Zone Positions (Top %, Left %, Width %, Height %)</div>
+        <div class="zone-controls" id="zone-controls"></div>
+        <div style="margin-top: 10px;">
+            <button class="calibration-button" onclick="copyZoneConfig()">📋 Copy Config</button>
+            <button class="calibration-button danger" onclick="closeCalibration()">Close Calibration</button>
+        </div>
+    </div>
+
+    <script>
+        // ============= CONFIGURATION =============
+        // Edit these positions to match your comic image's bubble locations
+        // All values are in percentages (0-100) for responsive design
+        const DROP_ZONES = [
+            { id: 'zone-0', top: 25.5, left: 4, width: 16, height: 8, correctCard: 0 },
+            { id: 'zone-1', top: 25, left: 57, width: 33, height: 7, correctCard: 1 },
+            { id: 'zone-2', top: 44.5, left: 23, width: 26, height: 5, correctCard: 2 },
+            { id: 'zone-3', top: 40, left: 65, width: 34, height: 6.5, correctCard: 3 },
+            { id: 'zone-4', top: 86, left: 2, width: 23, height: 5, correctCard: 4 },
+            { id: 'zone-5', top: 80.5, left: 80, width: 15, height: 8, correctCard: 5 },
+            { id: 'zone-6', top: 29, left: 23, width: 23, height: 6, correctCard: 6 },
+            { id: 'zone-7', top: 54, left: 23, width: 30, height: 4, correctCard: 7 },
+            { id: 'zone-8', top: 64.5, left: 21, width: 29.5, height: 4, correctCard: 8 },
+            { id: 'zone-9', top: 93, left: 24, width: 21, height: 0.5, correctCard: 9 },
+            { id: 'zone-10', top: 73, left: 67, width: 30, height: 7, correctCard: 10 }
+        ];
+
+        // Calibration mode - set to true to show zones on page load
+        const CALIBRATION_MODE = false;
+        let calibrationEnabled = CALIBRATION_MODE;
+
+        const NARRATION_CARDS = [
+            "BEFORE WE WORE OUR WHITE UNIFORMS, WE CAME FROM COMPLETELY DIFFERENT PATHS",
+            "LONG BEFORE THE CLASSROOMS, WE WERE TAUGHT FIRST IN THE FAMILY, CULTIVATING THE VALUES OF LOVE, RESPECT AND TOGETHERNESS",
+            "GROWTH REQUIRES SACRIFICE AND SLEEPLESS NIGHTS ESPECIALLY ON THE STEEP JOURNEY AHEAD",
+            "IN EVERY CELEBRATION, FOOD BECOMES THE BRIDGE OF CAMARADERIE. IT ENSURES NO ONE EATS ALONE, HONORING OUR PAKIKIPAGKAPWA AND UNITING US IN ONE SHARED HEART",
+            "WHERE WE ONCE HANDED OUT FOOD TO BRING COMFORT, WE NOW SHARE THAT SAME COMPASSION OVER THE PHARMACY COUNTER.",
+            "GUIDED BY ONE CULTURE AND ONE SHARED HEART, OUR FUTURE AS PHARMACISTS IS BUILT TO ENDURE AND READY TO HEAL",
+            "YET HERE, WE ARE BOUND BY ONE IDENTITY, ONE CULTURE AND ONE SHARED HEART",
+            "AND THOSE TIRING COMMUTES IN THE DARK, WHERE THE WEIGHT OF ENDURANCE FEELS HEAVIEST",
+            "FOR FILIPINOS, EVERY SUNRISE IS AN OPPORTUNITY TO RENEW OUR STRENGTH AND EMPOWER OURSELVES TO MOVE FORWARD",
+            "HEALING ONE PATIENT AT A TIME",
+            "FROM THE WARMTH OF OUR FAMILY TABLES TO THE COMPASSION WE GIVE OUR PATIENTS, OUR IDENTITY IS A JOURNEY OF CONTINUOUS GROWTH BUILT UPON RESILIENCE, RESPECT AND CAMARADERIE."
+        ];
+
+        // ============= STATE MANAGEMENT =============
+        let placedCards = {};
+        let draggedCard = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        // ============= INITIALIZATION =============
+        function initialize() {
+            createDropZones();
+            createNarrationCards();
+            setupDragAndDrop();
+            addCalibrationToggle();
+        }
+
+        function createDropZones() {
+            const comicContainer = document.getElementById('comic-container');
+            
+            DROP_ZONES.forEach((zone, index) => {
+                const dropZoneEl = document.createElement('div');
+                dropZoneEl.className = 'drop-zone';
+                dropZoneEl.id = zone.id;
+                dropZoneEl.dataset.zoneIndex = index;
+                dropZoneEl.style.top = zone.top + '%';
+                dropZoneEl.style.left = zone.left + '%';
+                dropZoneEl.style.width = zone.width + '%';
+                dropZoneEl.style.height = zone.height + '%';
+                
+                const label = document.createElement('div');
+                label.className = 'zone-label-overlay';
+                label.textContent = index + 1;
+                label.style.display = calibrationEnabled ? 'flex' : 'none';
+                dropZoneEl.appendChild(label);
+                
+                comicContainer.appendChild(dropZoneEl);
+            });
+
+            // Setup calibration mode if enabled
+            if (calibrationEnabled) {
+                setupCalibrationMode();
+            }
+        }
+
+        function setupCalibrationMode() {
+            const panel = document.getElementById('calibration-panel');
+            const controls = document.getElementById('zone-controls');
+            panel.style.display = 'block';
+            
+            DROP_ZONES.forEach((zone, index) => {
+                const control = document.createElement('div');
+                control.className = 'zone-control';
+                control.innerHTML = `
+                    <label>Bubble ${index + 1}</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <input type="number" id="zone-${index}-top" value="${zone.top}" placeholder="Top %" step="1">
+                        <input type="number" id="zone-${index}-left" value="${zone.left}" placeholder="Left %" step="1">
+                        <input type="number" id="zone-${index}-width" value="${zone.width}" placeholder="Width %" step="1">
+                        <input type="number" id="zone-${index}-height" value="${zone.height}" placeholder="Height %" step="1">
+                    </div>
+                    <button class="calibration-button" style="width: 100%; margin-top: 5px; padding: 6px;" onclick="updateZone(${index})">Update</button>
+                `;
+                controls.appendChild(control);
+            });
+        }
+
+        function updateZone(index) {
+            const top = parseFloat(document.getElementById(`zone-${index}-top`).value) || DROP_ZONES[index].top;
+            const left = parseFloat(document.getElementById(`zone-${index}-left`).value) || DROP_ZONES[index].left;
+            const width = parseFloat(document.getElementById(`zone-${index}-width`).value) || DROP_ZONES[index].width;
+            const height = parseFloat(document.getElementById(`zone-${index}-height`).value) || DROP_ZONES[index].height;
+            
+            DROP_ZONES[index].top = top;
+            DROP_ZONES[index].left = left;
+            DROP_ZONES[index].width = width;
+            DROP_ZONES[index].height = height;
+            
+            const zone = document.getElementById(DROP_ZONES[index].id);
+            zone.style.top = top + '%';
+            zone.style.left = left + '%';
+            zone.style.width = width + '%';
+            zone.style.height = height + '%';
+        }
+
+        function copyZoneConfig() {
+            const config = 'const DROP_ZONES = ' + JSON.stringify(DROP_ZONES, null, 4) + ';';
+            navigator.clipboard.writeText(config);
+            alert('Configuration copied to clipboard! Paste it into the HTML file.');
+        }
+
+        function closeCalibration() {
+            document.getElementById('calibration-panel').style.display = 'none';
+            calibrationEnabled = false;
+            renderDropZones();
+        }
+
+        function addCalibrationToggle() {
+            const button = document.getElementById('toggle-calibration');
+            button.addEventListener('click', () => {
+                calibrationEnabled = true;
+                document.getElementById('calibration-panel').style.display = 'block';
+                renderDropZones();
+            });
+        }
+
+        function renderDropZones() {
+            const labels = document.querySelectorAll('.zone-label-overlay');
+            labels.forEach(label => label.style.display = calibrationEnabled ? 'flex' : 'none');
+            const panel = document.getElementById('calibration-panel');
+            panel.style.display = calibrationEnabled ? 'block' : 'none';
+        }
+
+        function createNarrationCards() {
+            const cardsContainer = document.getElementById('cards-container');
+            
+            NARRATION_CARDS.forEach((text, index) => {
+                const card = document.createElement('div');
+                card.className = 'narration-card';
+                card.id = `card-${index}`;
+                card.draggable = true;
+                card.dataset.cardIndex = index;
+                card.textContent = text;
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        // ============= DRAG AND DROP LOGIC =============
+        function setupDragAndDrop() {
+            const cardsContainer = document.getElementById('cards-container');
+            
+            cardsContainer.addEventListener('dragstart', handleDragStart);
+            cardsContainer.addEventListener('dragend', handleDragEnd);
+            
+            document.addEventListener('dragover', handleDragOver);
+            document.addEventListener('drop', handleDrop);
+            
+            // Initialize drop zones as drop targets
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            if (!e.target.classList.contains('narration-card')) return;
+            if (e.target.classList.contains('placed')) return;
+            
+            draggedCard = e.target;
+            draggedCard.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            if (draggedCard) {
+                draggedCard.classList.remove('dragging');
+                draggedCard = null;
+            }
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.style.transform = 'scale(1.05)';
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            const dropZone = e.target.classList.contains('drop-zone') ? e.target : null;
+            
+            if (dropZone && draggedCard) {
+                const cardIndex = parseInt(draggedCard.dataset.cardIndex);
+                const zoneIndex = parseInt(dropZone.dataset.zoneIndex);
+                
+                // Check if card is already placed
+                if (draggedCard.classList.contains('placed')) {
+                    dropZone.style.transform = '';
+                    return;
+                }
+                
+                // Check if zone is already filled
+                if (dropZone.classList.contains('filled')) {
+                    dropZone.style.transform = '';
+                    return;
+                }
+                
+                // Validate if card is placed in correct zone
+                if (DROP_ZONES[zoneIndex].correctCard === cardIndex) {
+                    placeCard(draggedCard, dropZone, cardIndex);
+                    checkCompletion();
+                } else {
+                    // Wrong zone - return to original position (already handled by dragend)
+                }
+            }
+            
+            // Reset all drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.style.transform = '';
+            });
+        }
+
+        function placeCard(card, zone, cardIndex) {
+            // Mark card as placed
+            card.classList.add('placed');
+            placedCards[cardIndex] = zone;
+            
+            // Update zone styling
+            zone.classList.add('filled');
+            
+            // Move card into the zone (visually)
+            const cardText = NARRATION_CARDS[cardIndex];
+            const cardInZone = document.createElement('div');
+            cardInZone.className = 'card-inside-zone';
+            cardInZone.textContent = cardText;
+            cardInZone.id = `placed-card-${cardIndex}`;
+            
+            zone.innerHTML = '';
+            zone.appendChild(cardInZone);
+            
+            // Update progress
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const placed = Object.keys(placedCards).length;
+            const total = NARRATION_CARDS.length;
+            
+            document.getElementById('progress-count').textContent = placed;
+            const percentage = (placed / total) * 100;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+        }
+
+        function checkCompletion() {
+            const placed = Object.keys(placedCards).length;
+            if (placed === NARRATION_CARDS.length) {
+                showCompletion();
+            }
+        }
+
+        function showCompletion() {
+            const message = document.getElementById('completion-message');
+            message.classList.add('show');
+            createConfetti();
+        }
+
+        // ============= CONFETTI EFFECT =============
+        function createConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${2 + Math.random() * 1}s ease-in forwards`;
+                confetti.style.delay = Math.random() * 0.3 + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+
+        // ============= START =============
+        initialize();
+    </script>
+</body>
+</html>
