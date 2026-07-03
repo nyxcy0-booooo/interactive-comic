@@ -11,56 +11,43 @@
             box-sizing: border-box;
         }
 
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 4px;
+            min-height: 100vh;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             width: 100%;
-            height: calc(100vh - 8px);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow: hidden;
         }
 
         h1 {
             color: white;
             text-align: center;
-            margin-bottom: 0;
-            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .progress-counter {
             text-align: center;
             color: white;
-            font-size: 0.7rem;
-            margin-bottom: 0;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
             font-weight: bold;
-            flex: 0 0 auto;
         }
 
         .progress-bar {
-            width: 150px;
-            height: 4px;
+            width: 300px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
-            margin: 2px auto;
+            margin: 10px auto;
             overflow: hidden;
         }
 
@@ -71,57 +58,39 @@
             transition: width 0.3s ease;
         }
 
-        .main-area {
-            display: flex;
-            flex: 1;
-            gap: 4px;
-            min-height: 0;
-            overflow: hidden;
-            height: 100%;
-        }
-
         .comic-section {
             background: white;
-            border-radius: 6px;
-            padding: 6px;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            flex: 2;
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .comic-container {
             position: relative;
+            display: inline-block;
             width: 100%;
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin-bottom: 20px;
         }
 
         .comic-image {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
             height: auto;
-            width: auto;
             display: block;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
         .drop-zone {
             position: absolute;
             border: 2px dashed rgba(100, 150, 255, 0.3);
-            border-radius: 12px;
+            border-radius: 15px;
             background: rgba(100, 150, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
             cursor: pointer;
-            min-height: 40px;
+            min-height: 60px;
         }
 
         .drop-zone:hover {
@@ -143,23 +112,20 @@
         .narration-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px;
-            border-radius: 4px;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
             cursor: grab;
             user-select: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            flex: 0 0 auto;
-            min-height: 50px;
+            flex: 0 0 calc(50% - 20px);
+            min-height: 80px;
             display: flex;
             align-items: center;
             text-align: center;
-            font-size: 0.65rem;
-            line-height: 1.2;
-        }
-
-        .cards-container .narration-card {
-            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
         .narration-card:hover {
@@ -183,13 +149,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 4px;
+            padding: 6px;
             background: rgba(255, 255, 255, 0.95);
             color: #333;
-            border-radius: 6px;
-            font-size: 0.55rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
             text-align: center;
-            line-height: 1.15;
+            line-height: 1.25;
             width: 95%;
             max-height: 100%;
             overflow-y: auto;
@@ -202,45 +168,22 @@
 
         .cards-section {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 6px;
-            padding: 6px;
+            border-radius: 10px;
+            padding: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            max-height: 100%;
         }
 
         .cards-section h3 {
             color: #333;
-            margin-bottom: 4px;
-            font-size: 0.75rem;
-            flex: none;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
         }
 
         .cards-container {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow-y: auto;
-            padding-right: 2px;
-            min-height: 0;
-            flex: 1;
-        }
-
-        .cards-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .cards-container::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
-            border-radius: 10px;
-        }
-
-        .cards-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.8);
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
         }
 
         .completion-message {
@@ -299,6 +242,54 @@
             }
         }
 
+        /* Calibration Mode Styles */
+        .calibration-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 15px;
+            z-index: 2000;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 3px solid #667eea;
+        }
+
+        .calibration-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .zone-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .zone-control {
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .zone-control label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .zone-control input {
+            width: 100%;
+            padding: 4px;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            border: 1px solid #667eea;
+        }
+
         .zone-label-overlay {
             position: absolute;
             background: rgba(255, 0, 0, 0.7);
@@ -307,41 +298,53 @@
             font-size: 0.8rem;
             width: 100%;
             height: 100%;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
             pointer-events: none;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-area {
-                flex-direction: column;
-                height: 100%;
-            }
-
-            .comic-section,
-            .cards-section {
-                flex: 1;
-                width: 100%;
-            }
-
-            .cards-section {
-                min-height: 40vh;
-            }
+        .calibration-info {
+            background: rgba(102, 126, 234, 0.2);
+            border-left: 3px solid #667eea;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
         }
 
+        .calibration-button {
+            background: #4ade80;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .calibration-button:hover {
+            background: #22c55e;
+        }
+
+        .calibration-button.danger {
+            background: #ef4444;
+        }
+
+        .calibration-button.danger:hover {
+            background: #dc2626;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8rem;
             }
 
-            .cards-section {
-                padding: 15px;
-            }
-
             .narration-card {
+                flex: 0 0 calc(100% - 20px);
                 font-size: 0.9rem;
             }
 
@@ -410,24 +413,23 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
+            <button id="toggle-calibration" class="calibration-button" type="button" style="margin-top: 12px;">Edit bubble positions</button>
         </div>
 
-        <div class="main-area">
-            <!-- Comic Section -->
-            <div class="comic-section">
-                <div class="comic-container" id="comic-container">
-                    <img src="Before we wore our white uniforms, we came from completely different paths_20260702_232400_0000.png" 
-                         alt="Comic Background" class="comic-image" id="comic-image">
-                    <!-- Drop zones will be dynamically created here -->
-                </div>
+        <!-- Comic Section -->
+        <div class="comic-section">
+            <div class="comic-container" id="comic-container">
+                <img src="Before we wore our white uniforms, we came from completely different paths_20260702_232400_0000.png" 
+                     alt="Comic Background" class="comic-image" id="comic-image">
+                <!-- Drop zones will be dynamically created here -->
             </div>
+        </div>
 
-            <!-- Cards Section -->
-            <div class="cards-section">
-                <h3>📝 Drag cards to place them in the speech bubbles</h3>
-                <div class="cards-container" id="cards-container">
-                    <!-- Narration cards will be dynamically created here -->
-                </div>
+        <!-- Cards Section -->
+        <div class="cards-section">
+            <h3>📝 Drag cards to place them in the speech bubbles</h3>
+            <div class="cards-container" id="cards-container">
+                <!-- Narration cards will be dynamically created here -->
             </div>
         </div>
     </div>
@@ -436,6 +438,19 @@
     <div class="completion-message" id="completion-message">
         <h2>🎉 Congratulations!</h2>
         <p>You've completed the story! Well done arranging the narrative of our healthcare journey.</p>
+    </div>
+
+    <!-- Calibration Panel -->
+    <div class="calibration-panel" id="calibration-panel" style="display: none;">
+        <div class="calibration-info">
+            📍 <strong>Calibration Mode:</strong> Adjust the zones to match your speech bubbles. Update values below, then copy config.
+        </div>
+        <div class="calibration-title">Zone Positions (Top %, Left %, Width %, Height %)</div>
+        <div class="zone-controls" id="zone-controls"></div>
+        <div style="margin-top: 10px;">
+            <button class="calibration-button" onclick="copyZoneConfig()">📋 Copy Config</button>
+            <button class="calibration-button danger" onclick="closeCalibration()">Close Calibration</button>
+        </div>
     </div>
 
     <script>
@@ -456,6 +471,10 @@
             { id: 'zone-10', top: 73, left: 67, width: 30, height: 7, correctCard: 10 }
         ];
 
+        // Calibration mode - set to true to show zones on page load
+        const CALIBRATION_MODE = false;
+        let calibrationEnabled = CALIBRATION_MODE;
+
         const NARRATION_CARDS = [
             "BEFORE WE WORE OUR WHITE UNIFORMS, WE CAME FROM COMPLETELY DIFFERENT PATHS",
             "LONG BEFORE THE CLASSROOMS, WE WERE TAUGHT FIRST IN THE FAMILY, CULTIVATING THE VALUES OF LOVE, RESPECT AND TOGETHERNESS",
@@ -474,34 +493,13 @@
         let placedCards = {};
         let draggedCard = null;
         let dragOffset = { x: 0, y: 0 };
-        let autoScrollInterval = null;
-
-        // ============= AUTO-SCROLL FUNCTION =============
-        function startAutoScroll(direction) {
-            if (autoScrollInterval) clearInterval(autoScrollInterval);
-            
-            autoScrollInterval = setInterval(() => {
-                const scrollSpeed = 5;
-                if (direction === 'up') {
-                    window.scrollBy(0, -scrollSpeed);
-                } else if (direction === 'down') {
-                    window.scrollBy(0, scrollSpeed);
-                }
-            }, 30);
-        }
-
-        function stopAutoScroll() {
-            if (autoScrollInterval) {
-                clearInterval(autoScrollInterval);
-                autoScrollInterval = null;
-            }
-        }
 
         // ============= INITIALIZATION =============
         function initialize() {
             createDropZones();
             createNarrationCards();
             setupDragAndDrop();
+            addCalibrationToggle();
         }
 
         function createDropZones() {
@@ -517,7 +515,86 @@
                 dropZoneEl.style.width = zone.width + '%';
                 dropZoneEl.style.height = zone.height + '%';
                 
+                // Add calibration label (hidden unless calibration enabled)
+                const label = document.createElement('div');
+                label.className = 'zone-label-overlay';
+                label.textContent = index + 1;
+                label.style.display = calibrationEnabled ? 'flex' : 'none';
+                dropZoneEl.appendChild(label);
+
                 comicContainer.appendChild(dropZoneEl);
+            });
+
+            // Setup calibration mode if enabled
+            if (calibrationEnabled) {
+                setupCalibrationMode();
+            }
+        }
+
+        // Calibration helpers
+        function setupCalibrationMode() {
+            const panel = document.getElementById('calibration-panel');
+            const controls = document.getElementById('zone-controls');
+            panel.style.display = 'block';
+            controls.innerHTML = '';
+            
+            DROP_ZONES.forEach((zone, index) => {
+                const control = document.createElement('div');
+                control.className = 'zone-control';
+                control.innerHTML = `
+                    <label>Bubble ${index + 1}</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <input type="number" id="zone-${index}-top" value="${zone.top}" placeholder="Top %" step="0.1">
+                        <input type="number" id="zone-${index}-left" value="${zone.left}" placeholder="Left %" step="0.1">
+                        <input type="number" id="zone-${index}-width" value="${zone.width}" placeholder="Width %" step="0.1">
+                        <input type="number" id="zone-${index}-height" value="${zone.height}" placeholder="Height %" step="0.1">
+                    </div>
+                    <button class="calibration-button" style="width: 100%; margin-top: 5px; padding: 6px;" onclick="updateZone(${index})">Update</button>
+                `;
+                controls.appendChild(control);
+            });
+        }
+
+        function updateZone(index) {
+            const top = parseFloat(document.getElementById(`zone-${index}-top`).value) || DROP_ZONES[index].top;
+            const left = parseFloat(document.getElementById(`zone-${index}-left`).value) || DROP_ZONES[index].left;
+            const width = parseFloat(document.getElementById(`zone-${index}-width`).value) || DROP_ZONES[index].width;
+            const height = parseFloat(document.getElementById(`zone-${index}-height`).value) || DROP_ZONES[index].height;
+            
+            DROP_ZONES[index].top = top;
+            DROP_ZONES[index].left = left;
+            DROP_ZONES[index].width = width;
+            DROP_ZONES[index].height = height;
+            
+            const zone = document.getElementById(DROP_ZONES[index].id);
+            zone.style.top = top + '%';
+            zone.style.left = left + '%';
+            zone.style.width = width + '%';
+            zone.style.height = height + '%';
+        }
+
+        function copyZoneConfig() {
+            const config = 'const DROP_ZONES = ' + JSON.stringify(DROP_ZONES, null, 4) + ';';
+            navigator.clipboard.writeText(config);
+            alert('Configuration copied to clipboard! Paste it into the HTML file.');
+        }
+
+        function closeCalibration() {
+            document.getElementById('calibration-panel').style.display = 'none';
+            calibrationEnabled = false;
+            // hide labels
+            document.querySelectorAll('.zone-label-overlay').forEach(l => l.style.display = 'none');
+        }
+
+        function addCalibrationToggle() {
+            const button = document.getElementById('toggle-calibration');
+            if (!button) return;
+            button.addEventListener('click', () => {
+                calibrationEnabled = true;
+                document.getElementById('calibration-panel').style.display = 'block';
+                // show labels
+                document.querySelectorAll('.zone-label-overlay').forEach(l => l.style.display = 'flex');
+                setupCalibrationMode();
             });
         }
 
@@ -570,31 +647,11 @@
                 draggedCard.classList.remove('dragging');
                 draggedCard = null;
             }
-            stopAutoScroll();
         }
 
         function handleDragOver(e) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            
-            // Auto-scroll sensitivity (px from edge)
-            const scrollThreshold = 80;
-            const scrollableArea = document.querySelector('.main-area');
-            
-            if (scrollableArea) {
-                const rect = scrollableArea.getBoundingClientRect();
-                const mouseY = e.clientY;
-                
-                if (mouseY < rect.top + scrollThreshold && mouseY > rect.top) {
-                    // Near top - scroll up
-                    startAutoScroll('up');
-                } else if (mouseY > rect.bottom - scrollThreshold && mouseY < rect.bottom) {
-                    // Near bottom - scroll down
-                    startAutoScroll('down');
-                } else {
-                    stopAutoScroll();
-                }
-            }
             
             if (e.target.classList.contains('drop-zone')) {
                 e.target.style.transform = 'scale(1.05)';
