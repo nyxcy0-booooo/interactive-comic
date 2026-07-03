@@ -11,43 +11,56 @@
             box-sizing: border-box;
         }
 
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            padding: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
+            height: calc(100vh - 8px);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
         }
 
         h1 {
             color: white;
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5rem;
+            margin-bottom: 0;
+            font-size: 1.3rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .progress-counter {
             text-align: center;
             color: white;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            font-size: 0.7rem;
+            margin-bottom: 0;
             font-weight: bold;
+            flex: 0 0 auto;
         }
 
         .progress-bar {
-            width: 300px;
-            height: 8px;
+            width: 150px;
+            height: 4px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
-            margin: 10px auto;
+            margin: 2px auto;
             overflow: hidden;
         }
 
@@ -58,39 +71,57 @@
             transition: width 0.3s ease;
         }
 
+        .main-area {
+            display: flex;
+            flex: 1;
+            gap: 4px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+        }
+
         .comic-section {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
+            border-radius: 6px;
+            padding: 6px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            flex: 2;
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .comic-container {
             position: relative;
-            display: inline-block;
             width: 100%;
-            margin-bottom: 20px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .comic-image {
-            width: 100%;
+            max-width: 100%;
+            max-height: 100%;
             height: auto;
+            width: auto;
             display: block;
-            border-radius: 8px;
+            border-radius: 4px;
         }
 
         .drop-zone {
             position: absolute;
             border: 2px dashed rgba(100, 150, 255, 0.3);
-            border-radius: 15px;
+            border-radius: 12px;
             background: rgba(100, 150, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
             cursor: pointer;
-            min-height: 60px;
+            min-height: 40px;
         }
 
         .drop-zone:hover {
@@ -112,20 +143,23 @@
         .narration-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 4px;
             cursor: grab;
             user-select: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            flex: 0 0 calc(50% - 20px);
-            min-height: 80px;
+            flex: 0 0 auto;
+            min-height: 50px;
             display: flex;
             align-items: center;
             text-align: center;
-            font-size: 0.95rem;
-            line-height: 1.4;
+            font-size: 0.65rem;
+            line-height: 1.2;
+        }
+
+        .cards-container .narration-card {
+            margin: 0;
         }
 
         .narration-card:hover {
@@ -149,13 +183,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 6px;
+            padding: 4px;
             background: rgba(255, 255, 255, 0.95);
             color: #333;
-            border-radius: 8px;
-            font-size: 0.7rem;
+            border-radius: 6px;
+            font-size: 0.55rem;
             text-align: center;
-            line-height: 1.25;
+            line-height: 1.15;
             width: 95%;
             max-height: 100%;
             overflow-y: auto;
@@ -168,22 +202,45 @@
 
         .cards-section {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 6px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: 100%;
         }
 
         .cards-section h3 {
             color: #333;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
+            flex: none;
         }
 
         .cards-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            padding-right: 2px;
+            min-height: 0;
+            flex: 1;
+        }
+
+        .cards-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cards-container::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 10px;
+        }
+
+        .cards-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .completion-message {
@@ -258,13 +315,33 @@
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-area {
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .comic-section,
+            .cards-section {
+                flex: 1;
+                width: 100%;
+            }
+
+            .cards-section {
+                min-height: 40vh;
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8rem;
             }
 
+            .cards-section {
+                padding: 15px;
+            }
+
             .narration-card {
-                flex: 0 0 calc(100% - 20px);
                 font-size: 0.9rem;
             }
 
@@ -335,20 +412,22 @@
             </div>
         </div>
 
-        <!-- Comic Section -->
-        <div class="comic-section">
-            <div class="comic-container" id="comic-container">
-                <img src="Before we wore our white uniforms, we came from completely different paths_20260702_232400_0000.png" 
-                     alt="Comic Background" class="comic-image" id="comic-image">
-                <!-- Drop zones will be dynamically created here -->
+        <div class="main-area">
+            <!-- Comic Section -->
+            <div class="comic-section">
+                <div class="comic-container" id="comic-container">
+                    <img src="Before we wore our white uniforms, we came from completely different paths_20260702_232400_0000.png" 
+                         alt="Comic Background" class="comic-image" id="comic-image">
+                    <!-- Drop zones will be dynamically created here -->
+                </div>
             </div>
-        </div>
 
-        <!-- Cards Section -->
-        <div class="cards-section">
-            <h3>📝 Drag cards to place them in the speech bubbles</h3>
-            <div class="cards-container" id="cards-container">
-                <!-- Narration cards will be dynamically created here -->
+            <!-- Cards Section -->
+            <div class="cards-section">
+                <h3>📝 Drag cards to place them in the speech bubbles</h3>
+                <div class="cards-container" id="cards-container">
+                    <!-- Narration cards will be dynamically created here -->
+                </div>
             </div>
         </div>
     </div>
@@ -395,6 +474,28 @@
         let placedCards = {};
         let draggedCard = null;
         let dragOffset = { x: 0, y: 0 };
+        let autoScrollInterval = null;
+
+        // ============= AUTO-SCROLL FUNCTION =============
+        function startAutoScroll(direction) {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            
+            autoScrollInterval = setInterval(() => {
+                const scrollSpeed = 5;
+                if (direction === 'up') {
+                    window.scrollBy(0, -scrollSpeed);
+                } else if (direction === 'down') {
+                    window.scrollBy(0, scrollSpeed);
+                }
+            }, 30);
+        }
+
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+        }
 
         // ============= INITIALIZATION =============
         function initialize() {
@@ -469,11 +570,31 @@
                 draggedCard.classList.remove('dragging');
                 draggedCard = null;
             }
+            stopAutoScroll();
         }
 
         function handleDragOver(e) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
+            
+            // Auto-scroll sensitivity (px from edge)
+            const scrollThreshold = 80;
+            const scrollableArea = document.querySelector('.main-area');
+            
+            if (scrollableArea) {
+                const rect = scrollableArea.getBoundingClientRect();
+                const mouseY = e.clientY;
+                
+                if (mouseY < rect.top + scrollThreshold && mouseY > rect.top) {
+                    // Near top - scroll up
+                    startAutoScroll('up');
+                } else if (mouseY > rect.bottom - scrollThreshold && mouseY < rect.bottom) {
+                    // Near bottom - scroll down
+                    startAutoScroll('down');
+                } else {
+                    stopAutoScroll();
+                }
+            }
             
             if (e.target.classList.contains('drop-zone')) {
                 e.target.style.transform = 'scale(1.05)';
